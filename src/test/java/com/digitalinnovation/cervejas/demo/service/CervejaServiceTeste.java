@@ -15,6 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -34,19 +36,24 @@ public class CervejaServiceTeste {
     void quandoUmaCervejaForPassadaEntaoUmaCervejaDeveSerCriada() throws CervejaJaCadastradaException {
 
         //given
-        CervejaDTO cervejaDTOBuilder = CervejaDTOBuilder.builder().build().paraCervejaDTO();
-        Cerveja cervejaEsperada = mapper.toEntity(cervejaDTOBuilder);
+        CervejaDTO cervejaDTO = CervejaDTOBuilder.builder().build().paraCervejaDTO();
+        Cerveja cervejaEsperada = mapper.toEntity(cervejaDTO);
 
         //when
-        when(repository.findByNome(cervejaDTOBuilder.getNome())).thenReturn(Optional.empty());
+        when(repository.findByNome(cervejaDTO.getNome())).thenReturn(Optional.empty());
         when(repository.save(cervejaEsperada)).thenReturn(cervejaEsperada);
 
         //then
-        CervejaDTO cervejaSalva = service.salvaCerveja(cervejaDTOBuilder);
+        CervejaDTO cervejaSalva = service.salvaCerveja(cervejaDTO);
 
         //assert
-        assertEquals(cervejaDTOBuilder.getId(), cervejaSalva.getId());
-        assertEquals(cervejaDTOBuilder.getNome(), cervejaSalva.getNome());
+        assertEquals(cervejaDTO.getId(), cervejaSalva.getId());
+        assertEquals(cervejaDTO.getNome(), cervejaSalva.getNome());
+
+        //utilizano o hamcrest
+        assertThat(cervejaSalva.getId(), is(equalTo(cervejaDTO.getId())));
+        assertThat(cervejaSalva.getNome(), is(equalTo(cervejaDTO.getNome())));
+        assertThat(cervejaSalva.getQuantidade(), is(greaterThan(5)));
     }
 
 
