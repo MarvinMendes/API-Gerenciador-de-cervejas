@@ -21,7 +21,4 @@ public class CervejaDTO {
     private Integer quantidade;
     private TipoCerveja tipoCerveja;
 
-
-
-
 }
