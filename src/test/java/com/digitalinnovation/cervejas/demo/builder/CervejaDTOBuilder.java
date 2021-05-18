@@ -8,7 +8,7 @@ import lombok.Builder;
 public class CervejaDTOBuilder {
 
     @Builder.Default
-    private final Long id = 1L;
+    private final Long id = 6L;
 
     @Builder.Default
     private String nome = "Rancor";
@@ -17,10 +17,10 @@ public class CervejaDTOBuilder {
     private String marca = "Krug Bier";
 
     @Builder.Default
-    private Integer max = 20;
+    private Integer max = 200;
 
     @Builder.Default
-    private Integer quatidade = 10;
+    private Integer quatidade = 120;
 
     @Builder.Default
     private TipoCerveja tipoCerveja = TipoCerveja.INDIAPALEALE;

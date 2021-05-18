@@ -2,8 +2,11 @@ package com.digitalinnovation.cervejas.demo.controller;
 
 import com.digitalinnovation.cervejas.demo.builder.CervejaDTOBuilder;
 import com.digitalinnovation.cervejas.demo.dto.CervejaDTO;
-import com.digitalinnovation.cervejas.demo.service.CervejaService;
-import org.hamcrest.Matchers;
+import com.digitalinnovation.cervejas.demo.entities.Cerveja;
+import com.digitalinnovation.cervejas.demo.exceptions.CervejaNaoCadastradaException;
+import com.digitalinnovation.cervejas.demo.mapper.CervejaMapper;
+import com.digitalinnovation.cervejas.demo.repository.CervejaRepository;
+import com.digitalinnovation.cervejas.demo.serviceImpl.CervejaServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +21,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import java.util.Optional;
+
 import static com.digitalinnovation.cervejas.demo.utils.JsonConversorUtils.asJsonToString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -36,8 +43,13 @@ public class CervejaControllerTeste {
     @InjectMocks
     private CervejaController cervejaController;
 
+    @InjectMocks
+    private CervejaMapper mapper = CervejaMapper.INSTANCE;
+
     @Mock
-    private CervejaService service;
+    private CervejaRepository repository;
+    @InjectMocks
+    private CervejaServiceImpl service;
 
     @BeforeEach
     void setUp() {
@@ -65,7 +77,7 @@ public class CervejaControllerTeste {
                 .andExpect(jsonPath("$.id").value(cervejaDTO.getId()))
                 .andExpect(jsonPath("$.nome").value(cervejaDTO.getNome()))
                 .andExpect(jsonPath("$.tipoCerveja").value(cervejaDTO.getTipoCerveja().toString()))
-                .andExpect(jsonPath("$.max").value(Matchers.greaterThan(19)));
+                .andExpect(jsonPath("$.max").value(greaterThan(19)));
     }
 
     @Test
@@ -83,6 +95,24 @@ public class CervejaControllerTeste {
     void quandoUmDeleteForInvocadoComUmIdValidoUmaCervejaSeraDeletada() throws Exception {
         mockMvc.perform(delete(URL_API_PATH_DELETE))
                 .andExpect(status().isAccepted());
+    }
+
+    @Test
+    void quandoUmNomeValidoForPassadoEntaoUmaCervejaDeveSerRetornada() throws CervejaNaoCadastradaException {
+
+        //given+
+        CervejaDTO cervejaEncontradaDTO = CervejaDTOBuilder.builder().build().paraCervejaDTO();
+        Cerveja cervejaEncontrada = mapper.toEntity(cervejaEncontradaDTO);
+
+        //when
+        when(repository.findByNome(cervejaEncontrada.getNome())).thenReturn(Optional.of(cervejaEncontrada));
+
+        //then
+        CervejaDTO cervejaDTO = service.buscaPorNome(cervejaEncontradaDTO.getNome());
+
+        //assert
+        assertThat(cervejaDTO, is(equalTo(cervejaEncontradaDTO)));
+
     }
 
 

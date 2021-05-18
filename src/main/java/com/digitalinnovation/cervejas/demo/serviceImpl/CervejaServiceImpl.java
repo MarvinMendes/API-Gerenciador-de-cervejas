@@ -57,7 +57,8 @@ public class CervejaServiceImpl implements CervejaService {
 
     @Override
     public CervejaDTO buscaPorNome(String nome) throws CervejaNaoCadastradaException {
-        return cervejaMapper.toDTO(cervejaRepository.findByNome(nome).orElseThrow(() -> new CervejaNaoCadastradaException(nome)));
+        Cerveja cerveja = cervejaRepository.findByNome(nome).orElseThrow(() -> new CervejaNaoCadastradaException(nome));
+        return cervejaMapper.toDTO(cerveja);
     }
 
     private Cerveja verificaSeExiste(Long id) throws CervejaNaoCadastradaException {
