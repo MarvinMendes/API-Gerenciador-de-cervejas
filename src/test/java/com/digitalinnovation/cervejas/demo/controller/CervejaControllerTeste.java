@@ -20,6 +20,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import static com.digitalinnovation.cervejas.demo.utils.JsonConversorUtils.asJsonToString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CervejaControllerTeste {
 
     private static final String URL_API_PATH = "/cervejas";
+    private static final String URL_API_PATH_DELETE = "/cervejas/5";
     private MockMvc mockMvc;
 
     @InjectMocks
@@ -76,6 +78,13 @@ public class CervejaControllerTeste {
                 .content(asJsonToString(cervejaDTO)))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void quandoUmDeleteForInvocadoComUmIdValidoUmaCervejaSeraDeletada() throws Exception {
+        mockMvc.perform(delete(URL_API_PATH_DELETE))
+                .andExpect(status().isAccepted());
+    }
+
 
 
 //um método mais simples pra se converter um json em string,

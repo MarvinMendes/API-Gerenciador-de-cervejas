@@ -46,6 +46,7 @@ public class CervejaController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public void deletaCerveja(@PathVariable Long id) throws CervejaNaoCadastradaException {
         service.deletaCerveja(id);
     }
