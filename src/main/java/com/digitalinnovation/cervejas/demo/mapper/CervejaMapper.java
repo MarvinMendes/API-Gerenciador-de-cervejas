@@ -4,7 +4,6 @@ import com.digitalinnovation.cervejas.demo.dto.CervejaDTO;
 import com.digitalinnovation.cervejas.demo.entities.Cerveja;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 

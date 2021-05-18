@@ -11,7 +11,7 @@ public class CervejaDTOBuilder {
     private final Long id = 1L;
 
     @Builder.Default
-    private String nome = "Rancor";
+    private String nome = "Brahma";
 
     @Builder.Default
     private String marca = "Krug Bier";
