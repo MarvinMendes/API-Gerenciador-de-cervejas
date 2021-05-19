@@ -3,6 +3,7 @@ package com.digitalinnovation.cervejas.demo.controller;
 import com.digitalinnovation.cervejas.demo.dto.CervejaDTO;
 import com.digitalinnovation.cervejas.demo.exceptions.CervejaJaCadastradaException;
 import com.digitalinnovation.cervejas.demo.exceptions.CervejaNaoCadastradaException;
+import com.digitalinnovation.cervejas.demo.exceptions.EstoqueDeCervejaExcedidoException;
 import com.digitalinnovation.cervejas.demo.service.CervejaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -53,5 +54,12 @@ public class CervejaController {
     public void deletaCerveja(@PathVariable Long id) throws CervejaNaoCadastradaException {
         service.deletaCerveja(id);
     }
+
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PatchMapping("/{id}/increment/{quantidade}")
+    public void incrementaCerveja(@PathVariable Long id, @PathVariable int quantidade) throws EstoqueDeCervejaExcedidoException, CervejaNaoCadastradaException {
+        service.incrementa(id, quantidade);
+    }
+
 
 }
