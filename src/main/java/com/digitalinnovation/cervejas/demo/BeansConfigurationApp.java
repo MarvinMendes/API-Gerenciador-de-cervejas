@@ -11,6 +11,7 @@ import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Optional;
 
 @Configuration
@@ -32,6 +33,16 @@ public class BeansConfigurationApp {
 
             @Override
             public CervejaDTO toDTOByOptional(Optional<Cerveja> cerveja) {
+                return null;
+            }
+
+            @Override
+            public List<CervejaDTO> toDTOList(List<Cerveja> list) {
+                return null;
+            }
+
+            @Override
+            public List<Cerveja> toEntityList(List<CervejaDTO> dtoList) {
                 return null;
             }
         };

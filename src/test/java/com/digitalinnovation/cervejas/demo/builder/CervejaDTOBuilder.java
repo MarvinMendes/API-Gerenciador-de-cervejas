@@ -11,19 +11,19 @@ public class CervejaDTOBuilder {
     private final Long id = 6L;
 
     @Builder.Default
-    private String nome = "Rancor";
+    private String nome = "Brahma";
 
     @Builder.Default
-    private String marca = "Krug Bier";
+    private String marca = "AMBEV";
 
     @Builder.Default
-    private Integer max = 200;
+    private Integer max = 20;
 
     @Builder.Default
-    private Integer quatidade = 120;
+    private Integer quatidade = 12;
 
     @Builder.Default
-    private TipoCerveja tipoCerveja = TipoCerveja.INDIAPALEALE;
+    private TipoCerveja tipoCerveja = TipoCerveja.PILSEN;
 
 
     public CervejaDTO paraCervejaDTO() {

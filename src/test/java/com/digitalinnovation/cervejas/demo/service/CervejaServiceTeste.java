@@ -13,6 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -71,6 +73,22 @@ public class CervejaServiceTeste {
 
     }
 
+    @Test
+    void quandoUmGETForInvocadoUmaListaPreenchidaDeveSerRetornada() {
+        //given
+        CervejaDTO cervejaDTO = CervejaDTOBuilder.builder().build().paraCervejaDTO();
+        Cerveja cervejaEsperada = mapper.toEntity(cervejaDTO);
+
+
+        //when
+        when(repository.findAll()).thenReturn(Collections.singletonList(cervejaEsperada));
+
+        //then
+        List<CervejaDTO> listaComCervejas = service.listaTodas();
+
+        assertThat(listaComCervejas, is(not(empty())));
+        assertThat(listaComCervejas.get(0), is(equalTo(cervejaDTO)));
+    }
 
 
 
