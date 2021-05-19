@@ -29,8 +29,7 @@ import static com.digitalinnovation.cervejas.demo.utils.JsonConversorUtils.asJso
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -100,9 +99,9 @@ public class CervejaControllerTeste {
     }
 
     @Test
-    void quandoUmNomeValidoForPassadoEntaoUmaCervejaDeveSerRetornada() throws CervejaNaoCadastradaException {
+    void quandoUmNomeValidoForPassadoEntaoUmaCervejaDeveSerRetornada() throws Exception {
 
-        //given+
+        //given
         CervejaDTO cervejaEncontradaDTO = CervejaDTOBuilder.builder().build().paraCervejaDTO();
         Cerveja cervejaEncontrada = mapper.toEntity(cervejaEncontradaDTO);
 
@@ -118,7 +117,7 @@ public class CervejaControllerTeste {
     }
 
     @Test
-    void quandoUmaCervejaJaCadastradaForInformadaEntaoUmaExcecaoSeraLancada() {
+    void quandoUmaCervejaJaCadastradaForInformadaEntaoUmaExcecaoSeraLancada() throws Exception {
         //given
         CervejaDTO cervejaACadastrar = CervejaDTOBuilder.builder().build().paraCervejaDTO();
         Cerveja cervejaDuplicada = mapper.toEntity(cervejaACadastrar);
@@ -126,22 +125,26 @@ public class CervejaControllerTeste {
         //when
         when(repository.findByNome(cervejaACadastrar.getNome())).thenReturn(Optional.of(cervejaDuplicada));
 
-        //assert0
+        //assert
         Assertions.assertThrows(CervejaJaCadastradaException.class, () -> service.salvaCerveja(cervejaACadastrar));
 
     }
 
-    @Test
-    void quandoUmNomeForInformadoParaBuscaENaoForEncontradoEntaoUmaExcecaoSeraLancada () {
+    @Test//ok
+    void quandoUmNomeForInformadoParaBuscaENaoForEncontradoEntaoUmaExcecaoSeraLancada() throws Exception {
         //given
         CervejaDTO cervejaDTO = CervejaDTOBuilder.builder().build().paraCervejaDTO();
         Cerveja cerveja = mapper.toEntity(cervejaDTO);
+        cerveja.setNome("SKOL");
 
         //when
-        when(repository.findByNome("SKOL")).thenReturn(Optional.empty());
+        when(repository.findByNome(cerveja.getNome())).thenReturn(Optional.empty());
 
         //assertThrow
-        Assertions.assertThrows(CervejaNaoCadastradaException.class, () -> service.buscaPorNome("SKOL"));
+        Assertions.assertThrows(CervejaNaoCadastradaException.class, () -> service.buscaPorNome(cerveja.getNome()));
+
+        mockMvc.perform(get(URL_API_PATH + "/" + cerveja.getNome()))
+                .andExpect(status().isBadRequest());
 
     }
 

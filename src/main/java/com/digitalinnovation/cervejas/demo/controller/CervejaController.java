@@ -18,8 +18,8 @@ public class CervejaController {
 
     private final CervejaService service;
 
-    //TODO retornar nos endpoints um ResponseEntity
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<CervejaDTO> listaTodos() {
         return service.listaTodas();
     }
@@ -31,16 +31,19 @@ public class CervejaController {
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public CervejaDTO buscaPorId(@PathVariable Long id) throws CervejaNaoCadastradaException {
         return service.listaPorId(id);
     }
 
-    @GetMapping("/busca/{nome}")
+    @GetMapping("/nome/{nome}")
+    @ResponseStatus(HttpStatus.OK)
     public CervejaDTO buscaPorNome(@PathVariable String nome) throws CervejaNaoCadastradaException {
         return service.buscaPorNome(nome);
     }
 
     @PutMapping
+    @ResponseStatus(HttpStatus.OK)
     public CervejaDTO atualizaCerveja(@RequestBody CervejaDTO dto) throws CervejaNaoCadastradaException {
         return service.atualizaCerveja(dto);
     }
