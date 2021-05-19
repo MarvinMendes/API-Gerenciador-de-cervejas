@@ -3,10 +3,12 @@ package com.digitalinnovation.cervejas.demo.controller;
 import com.digitalinnovation.cervejas.demo.builder.CervejaDTOBuilder;
 import com.digitalinnovation.cervejas.demo.dto.CervejaDTO;
 import com.digitalinnovation.cervejas.demo.entities.Cerveja;
+import com.digitalinnovation.cervejas.demo.exceptions.CervejaJaCadastradaException;
 import com.digitalinnovation.cervejas.demo.exceptions.CervejaNaoCadastradaException;
 import com.digitalinnovation.cervejas.demo.mapper.CervejaMapper;
 import com.digitalinnovation.cervejas.demo.repository.CervejaRepository;
 import com.digitalinnovation.cervejas.demo.serviceImpl.CervejaServiceImpl;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -115,7 +117,33 @@ public class CervejaControllerTeste {
 
     }
 
+    @Test
+    void quandoUmaCervejaJaCadastradaForInformadaEntaoUmaExcecaoSeraLancada() {
+        //given
+        CervejaDTO cervejaACadastrar = CervejaDTOBuilder.builder().build().paraCervejaDTO();
+        Cerveja cervejaDuplicada = mapper.toEntity(cervejaACadastrar);
 
+        //when
+        when(repository.findByNome(cervejaACadastrar.getNome())).thenReturn(Optional.of(cervejaDuplicada));
+
+        //assert0
+        Assertions.assertThrows(CervejaJaCadastradaException.class, () -> service.salvaCerveja(cervejaACadastrar));
+
+    }
+
+    @Test
+    void quandoUmNomeForInformadoParaBuscaENaoForEncontradoEntaoUmaExcecaoSeraLancada () {
+        //given
+        CervejaDTO cervejaDTO = CervejaDTOBuilder.builder().build().paraCervejaDTO();
+        Cerveja cerveja = mapper.toEntity(cervejaDTO);
+
+        //when
+        when(repository.findByNome("SKOL")).thenReturn(Optional.empty());
+
+        //assertThrow
+        Assertions.assertThrows(CervejaNaoCadastradaException.class, () -> service.buscaPorNome("SKOL"));
+
+    }
 
 //um método mais simples pra se converter um json em string,
 // mas acabei optando por usar uma classe com método statico para manter o padrão de outros métodos
