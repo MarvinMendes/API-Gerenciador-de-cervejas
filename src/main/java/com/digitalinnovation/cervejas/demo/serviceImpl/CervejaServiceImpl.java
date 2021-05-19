@@ -4,6 +4,7 @@ import com.digitalinnovation.cervejas.demo.dto.CervejaDTO;
 import com.digitalinnovation.cervejas.demo.entities.Cerveja;
 import com.digitalinnovation.cervejas.demo.exceptions.CervejaJaCadastradaException;
 import com.digitalinnovation.cervejas.demo.exceptions.CervejaNaoCadastradaException;
+import com.digitalinnovation.cervejas.demo.exceptions.EstoqueDeCervejaExcedidoException;
 import com.digitalinnovation.cervejas.demo.mapper.CervejaMapper;
 import com.digitalinnovation.cervejas.demo.repository.CervejaRepository;
 import com.digitalinnovation.cervejas.demo.service.CervejaService;
@@ -59,6 +60,18 @@ public class CervejaServiceImpl implements CervejaService {
     public CervejaDTO buscaPorNome(String nome) throws CervejaNaoCadastradaException {
         Cerveja cerveja = cervejaRepository.findByNome(nome).orElseThrow(() -> new CervejaNaoCadastradaException(nome));
         return cervejaMapper.toDTO(cerveja);
+    }
+
+    @Override
+    public CervejaDTO incrementa(Long id, int quantidadeAIncrementar) throws CervejaNaoCadastradaException, EstoqueDeCervejaExcedidoException {
+        Cerveja cervejaAIncrementarAoEstoque = verificaSeExiste(id);
+        int quantidadeDoEstoqueAposIncremento = quantidadeAIncrementar + cervejaAIncrementarAoEstoque.getQuantidade();
+        if (quantidadeDoEstoqueAposIncremento <= cervejaAIncrementarAoEstoque.getMax()) {
+            cervejaAIncrementarAoEstoque.setQuantidade(cervejaAIncrementarAoEstoque.getQuantidade() + quantidadeAIncrementar);
+            Cerveja cervejaAposIncremento = cervejaRepository.save(cervejaAIncrementarAoEstoque);
+            return cervejaMapper.toDTO(cervejaAposIncremento);
+        }
+        throw new EstoqueDeCervejaExcedidoException(id, quantidadeAIncrementar);
     }
 
     private Cerveja verificaSeExiste(Long id) throws CervejaNaoCadastradaException {
